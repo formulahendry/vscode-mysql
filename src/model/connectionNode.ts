@@ -61,6 +61,15 @@ export class ConnectionNode implements INode {
     }
 
     public async deleteConnection(context: vscode.ExtensionContext, mysqlTreeDataProvider: MySQLTreeDataProvider) {
+        const options: vscode.MessageOptions = {
+            modal: true,
+        };
+        const answer = await vscode.window.showWarningMessage(`Are you sure you want to delete ${this.host}?`, options, "Delete connection");
+
+        if (answer === undefined) {
+            return;
+        }
+
         AppInsightsClient.sendEvent("deleteConnection");
         const connections = context.globalState.get<{ [key: string]: IConnection }>(Constants.GlobalStateMySQLConectionsKey);
         delete connections[this.id];
@@ -69,5 +78,56 @@ export class ConnectionNode implements INode {
         await Global.keytar.deletePassword(Constants.ExtensionId, this.id);
 
         mysqlTreeDataProvider.refresh();
+    }
+
+    public async editConnection(context?: vscode.ExtensionContext, mysqlTreeDataProvider?: MySQLTreeDataProvider) {
+        AppInsightsClient.sendEvent("editConncetion");
+
+        const host = await vscode.window.showInputBox({ prompt: "The hostname of the database", placeHolder: "host", ignoreFocusOut: true, value: this.host });
+        if (!host) {
+            return;
+        }
+
+        const user = await vscode.window.showInputBox({ prompt: "The MySQL user to authenticate as", placeHolder: "user", ignoreFocusOut: true, value: this.user });
+        if (!user) {
+            return;
+        }
+
+        const password = await vscode.window.showInputBox({ prompt: "The password of the MySQL user", placeHolder: "password", ignoreFocusOut: true, password: true, value: this.password });
+        if (password === undefined) {
+            return;
+        }
+
+        const port = await vscode.window.showInputBox({ prompt: "The port number to connect to", placeHolder: "port", ignoreFocusOut: true, value: this.port });
+        if (!port) {
+            return;
+        }
+
+        const certPath = await vscode.window.showInputBox({ prompt: "[Optional] SSL certificate path. Leave empty to ignore", placeHolder: "certificate file path", ignoreFocusOut: true,
+                                                            value: this.certPath });
+        if (certPath === undefined) {
+            return;
+        }
+
+        let connections = await context.globalState.get<{ [key: string]: IConnection }>(Constants.GlobalStateMySQLConectionsKey);
+
+        if (!connections) {
+            connections = {};
+        }
+
+        connections[this.id] = {
+            host,
+            user,
+            port,
+            certPath,
+        };
+
+        if (password) {
+            await Global.keytar.setPassword(Constants.ExtensionId, this.id, password);
+        }
+        await context.globalState.update(Constants.GlobalStateMySQLConectionsKey, connections);
+        mysqlTreeDataProvider.refresh();
+
+        return true;
     }
 }

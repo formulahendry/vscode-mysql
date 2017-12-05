@@ -4,7 +4,10 @@ import * as fs from "fs";
 import * as mysql from "mysql";
 import * as vscode from "vscode";
 import { IConnection } from "../model/connection";
+import { ConnectionNode } from "../model/connectionNode";
+import { MySQLTreeDataProvider } from "../mysqlTreeDataProvider";
 import { AppInsightsClient } from "./appInsightsClient";
+import { Constants } from "./constants";
 import { Global } from "./global";
 import { OutputChannel } from "./outputChannel";
 
@@ -90,6 +93,26 @@ export class Utility {
             };
         }
         return mysql.createConnection(newConnectionOptions);
+    }
+
+    public static async editConnection(connectionNode: ConnectionNode, context: vscode.ExtensionContext, mysqlTreeDataProvider: MySQLTreeDataProvider) {
+        if (connectionNode) {
+            connectionNode.editConnection(context, mysqlTreeDataProvider);
+        } else {
+
+            const test = [];
+            const connections = context.globalState.get<{ [key: string]: IConnection }>(Constants.GlobalStateMySQLConectionsKey);
+            const ConnectionNodes = [];
+            if (connections) {
+                for (const id of Object.keys(connections)) {
+                    test[id] = connections[id].database;
+                }
+            }
+            const selectedConnection = await vscode.window.showQuickPick(test);
+            if (selectedConnection) {
+                selectedConnection.editConnection(context, mysqlTreeDataProvider);
+            }
+        }
     }
 
     private static async hasActiveConnection(): Promise<boolean> {

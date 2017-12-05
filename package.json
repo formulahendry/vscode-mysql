@@ -74,6 +74,11 @@
                 "command": "mysql.selectTop1000",
                 "title": "Select Top 1000",
                 "category": "MySQL"
+            },
+            {
+                "command": "mysql.editConnection",
+                "title": "Edit Connection",
+                "category": "MySQL"
             }
         ],
         "menus": {
@@ -100,7 +105,7 @@
                 {
                     "command": "mysql.deleteConnection",
                     "when": "view == mysql && viewItem == connection",
-                    "group": "mysql@2"
+                    "group": "mysql@3"
                 },
                 {
                     "command": "mysql.newQuery",
@@ -121,6 +126,11 @@
                     "command": "mysql.refresh",
                     "when": "view == mysql && viewItem == table",
                     "group": "mysql@1"
+                },
+                {
+                    "command": "mysql.editConnection",
+                    "when": "view == mysql && viewItem == connection",
+                    "group": "mysql@2"
                 }
             ]
         },
