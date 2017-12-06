@@ -99,6 +99,7 @@ export class Utility {
         if (connectionNode) {
             connectionNode.editConnection(context, mysqlTreeDataProvider);
         } else {
+            // No connection has been selected, let the user pick one
             const connections = context.globalState.get<{ [key: string]: IConnection }>(Constants.GlobalStateMySQLConectionsKey);
             const items: vscode.QuickPickItem[] = [];
 
@@ -121,45 +122,10 @@ export class Utility {
                 const selectedConnection = connections[selectedConnectionId];
 
                 if (selectedConnection !== undefined) {
-                    const host = await vscode.window.showInputBox({ prompt: "The hostname of the database", placeHolder: "host", ignoreFocusOut: true, value: selectedConnection.host });
-                    if (!host) {
-                        return;
-                    }
+                    const dummyNode = new ConnectionNode(selectedConnectionId, selectedConnection.host, selectedConnection.user, selectedConnection.password,
+                                                    selectedConnection.port, selectedConnection.certPath);
 
-                    const user = await vscode.window.showInputBox({ prompt: "The MySQL user to authenticate as", placeHolder: "user", ignoreFocusOut: true, value: selectedConnection.user });
-                    if (!user) {
-                        return;
-                    }
-
-                    const password = await vscode.window.showInputBox({ prompt: "The password of the MySQL user", placeHolder: "password",
-                                                                        ignoreFocusOut: true, password: true, value: selectedConnection.password });
-                    if (password === undefined) {
-                        return;
-                    }
-
-                    const port = await vscode.window.showInputBox({ prompt: "The port number to connect to", placeHolder: "port", ignoreFocusOut: true, value: selectedConnection.port });
-                    if (!port) {
-                        return;
-                    }
-
-                    const certPath = await vscode.window.showInputBox({ prompt: "[Optional] SSL certificate path. Leave empty to ignore", placeHolder: "certificate file path", ignoreFocusOut: true,
-                                                                        value: selectedConnection.certPath });
-                    if (certPath === undefined) {
-                        return;
-                    }
-
-                    connections[selectedConnectionId] = {
-                        host,
-                        user,
-                        port,
-                        certPath,
-                    };
-
-                    if (password) {
-                        await Global.keytar.setPassword(Constants.ExtensionId, selectedConnectionId, password);
-                    }
-                    await context.globalState.update(Constants.GlobalStateMySQLConectionsKey, connections);
-                    mysqlTreeDataProvider.refresh();
+                    dummyNode.editConnection(context, mysqlTreeDataProvider);
                 }
             });
         }

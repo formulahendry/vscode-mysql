@@ -93,7 +93,8 @@ export class ConnectionNode implements INode {
             return;
         }
 
-        const password = await vscode.window.showInputBox({ prompt: "The password of the MySQL user", placeHolder: "password", ignoreFocusOut: true, password: true, value: this.password });
+        const password = await vscode.window.showInputBox({ prompt: "The password of the MySQL user", placeHolder: "password",
+                                                            ignoreFocusOut: true, password: true, value: await Global.keytar.getPassword(Constants.ExtensionId, this.id) });
         if (password === undefined) {
             return;
         }
