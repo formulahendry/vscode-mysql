@@ -131,6 +131,42 @@ export class Utility {
         }
     }
 
+    public static async deleteConnection(connectionNode: ConnectionNode, context: vscode.ExtensionContext, mysqlTreeDataProvider: MySQLTreeDataProvider) {
+        if (connectionNode) {
+            connectionNode.deleteConnection(context, mysqlTreeDataProvider);
+        } else {
+            // No connection has been selected, let the user pick one
+            const connections = context.globalState.get<{ [key: string]: IConnection }>(Constants.GlobalStateMySQLConectionsKey);
+            const items: vscode.QuickPickItem[] = [];
+
+            if (connections) {
+                for (const id of Object.keys(connections)) {
+                    const item = connections[id];
+                    items.push({
+                      label: item.host,
+                      description: item.user});
+                }
+            }
+
+            vscode.window.showQuickPick(items).then(async (selection) => {
+                // the user canceled the selection
+                if (!selection) {
+                    return;
+                }
+
+                const selectedConnectionId = Object.keys(connections)[items.indexOf(selection)];
+                const selectedConnection = connections[selectedConnectionId];
+
+                if (selectedConnection !== undefined) {
+                    const dummyNode = new ConnectionNode(selectedConnectionId, selectedConnection.host, selectedConnection.user, selectedConnection.password,
+                                                    selectedConnection.port, selectedConnection.certPath);
+
+                    dummyNode.deleteConnection(context, mysqlTreeDataProvider);
+                }
+            });
+        }
+    }
+
     private static async hasActiveConnection(): Promise<boolean> {
         let count = 5;
         while (!Global.activeConnection && count > 0) {
