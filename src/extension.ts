@@ -40,7 +40,7 @@ export function activate(context: vscode.ExtensionContext) {
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("mysql.editConnection", (connectionNode: ConnectionNode) => {
-        Utility.editConnection(connectionNode, this, mysqlTreeDataProvider);
+        Utility.editConnection(connectionNode, context, mysqlTreeDataProvider);
     }));
 }
 
