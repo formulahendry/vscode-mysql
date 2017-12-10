@@ -80,55 +80,36 @@ export class ConnectionNode implements INode {
         mysqlTreeDataProvider.refresh();
     }
 
-    public async editConnection(context?: vscode.ExtensionContext, mysqlTreeDataProvider?: MySQLTreeDataProvider) {
-        AppInsightsClient.sendEvent("editConncetion");
+    public async editConnection(context: vscode.ExtensionContext, mysqlTreeDataProvider: MySQLTreeDataProvider) {
+        AppInsightsClient.sendEvent("editConncetion.start");
 
-        const host = await vscode.window.showInputBox({ prompt: "The hostname of the database", placeHolder: "host", ignoreFocusOut: true, value: this.host });
-        if (!host) {
-            return;
-        }
-
-        const user = await vscode.window.showInputBox({ prompt: "The MySQL user to authenticate as", placeHolder: "user", ignoreFocusOut: true, value: this.user });
-        if (!user) {
-            return;
-        }
-
-        const password = await vscode.window.showInputBox({ prompt: "The password of the MySQL user", placeHolder: "password",
-                                                            ignoreFocusOut: true, password: true, value: await Global.keytar.getPassword(Constants.ExtensionId, this.id) });
-        if (password === undefined) {
-            return;
-        }
-
-        const port = await vscode.window.showInputBox({ prompt: "The port number to connect to", placeHolder: "port", ignoreFocusOut: true, value: this.port });
-        if (!port) {
-            return;
-        }
-
-        const certPath = await vscode.window.showInputBox({ prompt: "[Optional] SSL certificate path. Leave empty to ignore", placeHolder: "certificate file path", ignoreFocusOut: true,
-                                                            value: this.certPath });
-        if (certPath === undefined) {
-            return;
-        }
-
-        let connections = await context.globalState.get<{ [key: string]: IConnection }>(Constants.GlobalStateMySQLConectionsKey);
-
-        if (!connections) {
-            connections = {};
-        }
-
-        connections[this.id] = {
-            host,
-            user,
-            port,
-            certPath,
+        const copyFrom: IConnection = {
+            id: this.id,
+            host: this.host,
+            user: this.user,
+            password: this.password,
+            port: this.port,
+            certPath: this.certPath,
         };
+        const editConnection = await Utility.createConnectionFromInput(context, copyFrom);
 
-        if (password) {
-            await Global.keytar.setPassword(Constants.ExtensionId, this.id, password);
+        if (editConnection !== undefined) {
+            let connections = await context.globalState.get<{ [key: string]: IConnection }>(Constants.GlobalStateMySQLConectionsKey);
+
+            if (!connections) {
+                connections = {};
+            }
+
+            connections[editConnection.id] = editConnection;
+
+            if (editConnection.password) {
+                await Global.keytar.setPassword(Constants.ExtensionId, editConnection.id, editConnection.password);
+            }
+
+            await context.globalState.update(Constants.GlobalStateMySQLConectionsKey, connections);
+            mysqlTreeDataProvider.refresh();
         }
-        await context.globalState.update(Constants.GlobalStateMySQLConectionsKey, connections);
-        mysqlTreeDataProvider.refresh();
 
-        return true;
+        AppInsightsClient.sendEvent("editConncetion.end");
     }
 }
