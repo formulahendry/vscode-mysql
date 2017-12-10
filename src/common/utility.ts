@@ -51,7 +51,7 @@ export class Utility {
         sql = sql ? sql : vscode.window.activeTextEditor.document.getText();
         connectionOptions = connectionOptions ? connectionOptions : Global.activeConnection;
         connectionOptions.multipleStatements = true;
-        const connection = Utility.createConnection(connectionOptions);
+        const connection = Utility.createMySQLConnection(connectionOptions);
 
         OutputChannel.appendLine("[Start] Executing MySQL query...");
         connection.query(sql, (err, rows) => {
@@ -87,7 +87,7 @@ export class Utility {
     }
 
     // TODO: Rename to createMySQLConnection
-    public static createConnection(connectionOptions: IConnection): any {
+    public static createMySQLConnection(connectionOptions: IConnection): any {
         const newConnectionOptions: any = Object.assign({}, connectionOptions);
         if (connectionOptions.certPath && fs.existsSync(connectionOptions.certPath)) {
             newConnectionOptions.ssl = {

@@ -28,7 +28,7 @@ export class ConnectionNode implements INode {
     }
 
     public async getChildren(): Promise<INode[]> {
-        const connection = Utility.createConnection({
+        const connection = Utility.createMySQLConnection({
             host: this.host,
             user: this.user,
             password: this.password,
