@@ -62,4 +62,31 @@ export class TableNode implements INode {
 
         Utility.runQuery(sql, connection);
     }
+
+    public async dropTable() {
+        const options: vscode.MessageOptions = {
+            modal: true,
+        };
+        const answer = await vscode.window.showWarningMessage(`Are you sure you want to drop table ${this.table}?`, options, "Drop table");
+
+        if (answer === undefined) {
+            return;
+        }
+
+        AppInsightsClient.sendEvent("drop table");
+        const sql = `DROP TABLE ${this.database}.${this.table}`;
+        Utility.createSQLTextDocument(sql);
+
+        const connection = {
+            host: this.host,
+            user: this.user,
+            password: this.password,
+            port: this.port,
+            database: this.database,
+            certPath: this.certPath,
+        };
+        Global.activeConnection = connection;
+
+        Utility.runQuery(sql, connection);
+    }
 }

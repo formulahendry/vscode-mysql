@@ -86,7 +86,6 @@ export class Utility {
         return vscode.window.showTextDocument(textDocument);
     }
 
-    // TODO: Rename to createMySQLConnection
     public static createMySQLConnection(connectionOptions: IConnection): any {
         const newConnectionOptions: any = Object.assign({}, connectionOptions);
         if (connectionOptions.certPath && fs.existsSync(connectionOptions.certPath)) {

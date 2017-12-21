@@ -42,6 +42,10 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand("mysql.editConnection", (connectionNode: ConnectionNode) => {
         Utility.editConnection(connectionNode, context, mysqlTreeDataProvider);
     }));
+
+    context.subscriptions.push(vscode.commands.registerCommand("mysql.dropTable", (tableNode: TableNode) => {
+        tableNode.dropTable();
+    }));
 }
 
 export function deactivate() {
