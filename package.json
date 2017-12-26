@@ -56,6 +56,15 @@
                 "category": "MySQL"
             },
             {
+                "command": "mysql.searchTable",
+                "title": "Search Table",
+                "icon": {
+                    "light": "resources/b_search.png",
+                    "dark": "resources/b_search.png"
+                },
+                "category": "MySQL"
+            },
+            {
                 "command": "mysql.deleteConnection",
                 "title": "Delete Connection",
                 "category": "MySQL"
@@ -139,7 +148,14 @@
                     "description": "The maximum table count shown in the tree view"
                 }
             }
-        }
+        },
+		"keybindings": [
+			{
+				"command": "mysql.searchTable",
+				"key": "ctrl+f",
+				"when": "!editorFocus&&explorerViewletVisible&&!explorerViewletFocus&&!terminalFocus&&!problemFocus"
+			}
+		]
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",

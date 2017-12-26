@@ -23,6 +23,10 @@ export function activate(context: vscode.ExtensionContext) {
         mysqlTreeDataProvider.addConnection();
     }));
 
+    context.subscriptions.push(vscode.commands.registerCommand("mysql.searchTable", () => {
+        mysqlTreeDataProvider.searchTable();
+    }));
+
     context.subscriptions.push(vscode.commands.registerCommand("mysql.deleteConnection", (connectionNode: ConnectionNode) => {
         connectionNode.deleteConnection(context, mysqlTreeDataProvider);
     }));

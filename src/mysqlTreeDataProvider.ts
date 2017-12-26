@@ -76,6 +76,11 @@ export class MySQLTreeDataProvider implements vscode.TreeDataProvider<INode> {
         AppInsightsClient.sendEvent("addConnection.end");
     }
 
+    public async searchTable() {
+        Global.keyword = await vscode.window.showInputBox({ prompt: "" , placeHolder: "table", value: Global.keyword });
+        this.refresh();
+    }
+
     public refresh(element?: INode): void {
         this._onDidChangeTreeData.fire(element);
     }
