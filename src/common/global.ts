@@ -28,8 +28,8 @@ export class Global {
 
     public static tableFilter(tables: any[]) {
         if ( Global.keyword ) {
-            return tables.filter((table1, table2) => {
-                return table1.TABLE_NAME.indexOf( Global.keyword ) !== -1;
+            return tables.filter((table) => {
+                return table.TABLE_NAME.indexOf( Global.keyword ) !== -1;
             });
         } else {
             return tables;
