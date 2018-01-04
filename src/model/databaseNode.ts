@@ -5,11 +5,13 @@ import * as vscode from "vscode";
 import { AppInsightsClient } from "../common/appInsightsClient";
 import { Global } from "../common/global";
 import { Utility } from "../common/utility";
+import { MySQLTreeDataProvider } from "../mysqlTreeDataProvider";
 import { InfoNode } from "./infoNode";
 import { INode } from "./INode";
 import { TableNode } from "./tableNode";
 
 export class DatabaseNode implements INode {
+    public keyword;
     constructor(private readonly host: string, private readonly user: string,
                 private readonly password: string, private readonly port: string, private readonly database: string,
                 private readonly certPath: string) {
@@ -20,7 +22,7 @@ export class DatabaseNode implements INode {
             label: this.database,
             collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
             contextValue: "database",
-            iconPath: path.join(__filename, "..", "..", "..", "resources", "database.svg"),
+            iconPath: path.join(__filename, "..", "..", "..", "resources", this.keyword ? "b_search.png" : "database.svg"),
         };
     }
 
@@ -36,7 +38,12 @@ export class DatabaseNode implements INode {
 
         return Utility.queryPromise<any[]>(connection, `SELECT TABLE_NAME FROM information_schema.TABLES  WHERE TABLE_SCHEMA = '${this.database}' LIMIT ${Utility.maxTableCount}`)
             .then((tables) => {
-                return Global.tableFilter(tables).map<TableNode>((table) => {
+                if ( this.keyword ) {
+                    tables = tables.filter((table) => {
+                        return table.TABLE_NAME.indexOf( this.keyword ) !== -1;
+                    });
+                }
+                return tables.map<TableNode>((table) => {
                     return new TableNode(this.host, this.user, this.password, this.port, this.database, table.TABLE_NAME, this.certPath);
                 });
             })

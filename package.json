@@ -56,15 +56,6 @@
                 "category": "MySQL"
             },
             {
-                "command": "mysql.searchTable",
-                "title": "Search Table",
-                "icon": {
-                    "light": "resources/b_search.png",
-                    "dark": "resources/b_search.png"
-                },
-                "category": "MySQL"
-            },
-            {
                 "command": "mysql.deleteConnection",
                 "title": "Delete Connection",
                 "category": "MySQL"
@@ -82,6 +73,11 @@
             {
                 "command": "mysql.selectTop1000",
                 "title": "Select Top 1000",
+                "category": "MySQL"
+            },
+            {
+                "command": "mysql.keywordFilter",
+                "title": "Keyword Filter",
                 "category": "MySQL"
             }
         ],
@@ -137,6 +133,16 @@
                     "command": "mysql.refresh",
                     "when": "view == mysql && viewItem == table",
                     "group": "mysql@1"
+                },
+                {
+                    "command": "mysql.keywordFilter",
+                    "when": "view == mysql && viewItem == connection",
+                    "group": "mysql@2"
+                },
+                {
+                    "command": "mysql.keywordFilter",
+                    "when": "view == mysql && viewItem == database",
+                    "group": "mysql@2"
                 }
             ]
         },
@@ -155,14 +161,7 @@
                     "description": "The maximum table count shown in the tree view"
                 }
             }
-        },
-		"keybindings": [
-			{
-				"command": "mysql.searchTable",
-				"key": "ctrl+f",
-				"when": "!editorFocus&&explorerViewletVisible&&!explorerViewletFocus&&!terminalFocus&&!problemFocus"
-			}
-		]
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",

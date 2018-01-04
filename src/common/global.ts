@@ -5,7 +5,6 @@ import { IConnection } from "../model/connection";
 
 export class Global {
     public static keytar: typeof keytarType = require(`${vscode.env.appRoot}/node_modules/keytar`);
-    public static keyword: string;
 
     static get activeConnection(): IConnection {
         return Global._activeConnection;
@@ -23,16 +22,6 @@ export class Global {
             Global.mysqlStatusBarItem = vscode.window.createStatusBarItem(vscode.StatusBarAlignment.Left);
             Global.mysqlStatusBarItem.text = Global.getStatusBarItemText(activeConnection);
             Global.mysqlStatusBarItem.show();
-        }
-    }
-
-    public static tableFilter(tables: any[]) {
-        if ( Global.keyword ) {
-            return tables.filter((table) => {
-                return table.TABLE_NAME.indexOf( Global.keyword ) !== -1;
-            });
-        } else {
-            return tables;
         }
     }
 
