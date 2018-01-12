@@ -12,6 +12,7 @@ import { TableNode } from "./tableNode";
 
 export class DatabaseNode implements INode {
     public keyword;
+
     constructor(private readonly host: string, private readonly user: string,
                 private readonly password: string, private readonly port: string, private readonly database: string,
                 private readonly certPath: string) {
@@ -35,14 +36,9 @@ export class DatabaseNode implements INode {
             database: this.database,
             certPath: this.certPath,
         });
-
-        return Utility.queryPromise<any[]>(connection, `SELECT TABLE_NAME FROM information_schema.TABLES  WHERE TABLE_SCHEMA = '${this.database}' LIMIT ${Utility.maxTableCount}`)
+        const filter = this.keyword ? `TABLE_NAME LIKE '%${this.keyword}%'` : "";
+        return Utility.queryPromise<any[]>(connection, `SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_SCHEMA = '${this.database}' ${filter} LIMIT ${Utility.maxTableCount}`)
             .then((tables) => {
-                if ( this.keyword ) {
-                    tables = tables.filter((table) => {
-                        return table.TABLE_NAME.indexOf( this.keyword ) !== -1;
-                    });
-                }
                 return tables.map<TableNode>((table) => {
                     return new TableNode(this.host, this.user, this.password, this.port, this.database, table.TABLE_NAME, this.certPath);
                 });

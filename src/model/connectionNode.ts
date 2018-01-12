@@ -14,6 +14,7 @@ import { INode } from "./INode";
 
 export class ConnectionNode implements INode {
     public keyword;
+
     constructor(private readonly id: string, private readonly host: string, private readonly user: string,
                 private readonly password: string, private readonly port: string,
                 private readonly certPath: string) {
@@ -37,13 +38,8 @@ export class ConnectionNode implements INode {
             certPath: this.certPath,
         });
 
-        return Utility.queryPromise<any[]>(connection, "SHOW DATABASES")
+        return Utility.queryPromise<any[]>(connection, "SHOW DATABASES" + (this.keyword ? ` LIKE '%${this.keyword}%'` : ""))
             .then((databases) => {
-                if ( this.keyword ) {
-                    databases = databases.filter((table) => {
-                        return table.Database.indexOf( this.keyword ) !== -1;
-                    });
-                }
                 return databases.map<DatabaseNode>((database) => {
                     return new DatabaseNode(this.host, this.user, this.password, this.port, database.Database, this.certPath);
                 });
