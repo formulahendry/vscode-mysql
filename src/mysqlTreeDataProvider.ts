@@ -1,9 +1,9 @@
 import * as path from "path";
-import * as uuidv1 from "uuid/v1";
 import * as vscode from "vscode";
 import { AppInsightsClient } from "./common/appInsightsClient";
 import { Constants } from "./common/constants";
 import { Global } from "./common/global";
+import { Utility } from "./common/utility";
 import { IConnection } from "./model/connection";
 import { ConnectionNode } from "./model/connectionNode";
 import { INode } from "./model/INode";
@@ -29,50 +29,24 @@ export class MySQLTreeDataProvider implements vscode.TreeDataProvider<INode> {
 
     public async addConnection() {
         AppInsightsClient.sendEvent("addConnection.start");
-        const host = await vscode.window.showInputBox({ prompt: "The hostname of the database", placeHolder: "host", ignoreFocusOut: true });
-        if (!host) {
-            return;
+
+        const newConnection = await Utility.createConnectionFromInput(this.context);
+
+        if (newConnection !== undefined) {
+            let connections = await this.context.globalState.get<{ [key: string]: IConnection }>(Constants.GlobalStateMySQLConectionsKey);
+
+            if (!connections) {
+                connections = {};
+            }
+
+            connections[newConnection.id] = newConnection;
+
+            if (newConnection.password) {
+                await Global.keytar.setPassword(Constants.ExtensionId, newConnection.id, newConnection.password);
+            }
+            await this.context.globalState.update(Constants.GlobalStateMySQLConectionsKey, connections);
+            this.refresh();
         }
-
-        const user = await vscode.window.showInputBox({ prompt: "The MySQL user to authenticate as", placeHolder: "user", ignoreFocusOut: true });
-        if (!user) {
-            return;
-        }
-
-        const password = await vscode.window.showInputBox({ prompt: "The password of the MySQL user", placeHolder: "password", ignoreFocusOut: true, password: true });
-        if (password === undefined) {
-            return;
-        }
-
-        const port = await vscode.window.showInputBox({ prompt: "The port number to connect to", placeHolder: "port", ignoreFocusOut: true, value: "3306" });
-        if (!port) {
-            return;
-        }
-
-        const certPath = await vscode.window.showInputBox({ prompt: "[Optional] SSL certificate path. Leave empty to ignore", placeHolder: "certificate file path", ignoreFocusOut: true });
-        if (certPath === undefined) {
-            return;
-        }
-
-        let connections = this.context.globalState.get<{ [key: string]: IConnection }>(Constants.GlobalStateMySQLConectionsKey);
-
-        if (!connections) {
-            connections = {};
-        }
-
-        const id = uuidv1();
-        connections[id] = {
-            host,
-            user,
-            port,
-            certPath,
-        };
-
-        if (password) {
-            await Global.keytar.setPassword(Constants.ExtensionId, id, password);
-        }
-        await this.context.globalState.update(Constants.GlobalStateMySQLConectionsKey, connections);
-        this.refresh();
         AppInsightsClient.sendEvent("addConnection.end");
     }
 

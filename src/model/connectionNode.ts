@@ -28,7 +28,7 @@ export class ConnectionNode implements INode {
     }
 
     public async getChildren(): Promise<INode[]> {
-        const connection = Utility.createConnection({
+        const connection = Utility.createMySQLConnection({
             host: this.host,
             user: this.user,
             password: this.password,
@@ -61,6 +61,15 @@ export class ConnectionNode implements INode {
     }
 
     public async deleteConnection(context: vscode.ExtensionContext, mysqlTreeDataProvider: MySQLTreeDataProvider) {
+        const options: vscode.MessageOptions = {
+            modal: true,
+        };
+        const answer = await vscode.window.showWarningMessage(`Are you sure you want to delete ${this.host}?`, options, "Delete connection");
+
+        if (answer === undefined) {
+            return;
+        }
+
         AppInsightsClient.sendEvent("deleteConnection");
         const connections = context.globalState.get<{ [key: string]: IConnection }>(Constants.GlobalStateMySQLConectionsKey);
         delete connections[this.id];
@@ -69,5 +78,38 @@ export class ConnectionNode implements INode {
         await Global.keytar.deletePassword(Constants.ExtensionId, this.id);
 
         mysqlTreeDataProvider.refresh();
+    }
+
+    public async editConnection(context: vscode.ExtensionContext, mysqlTreeDataProvider: MySQLTreeDataProvider) {
+        AppInsightsClient.sendEvent("editConncetion.start");
+
+        const copyFrom: IConnection = {
+            id: this.id,
+            host: this.host,
+            user: this.user,
+            password: this.password,
+            port: this.port,
+            certPath: this.certPath,
+        };
+        const editConnection = await Utility.createConnectionFromInput(context, copyFrom);
+
+        if (editConnection !== undefined) {
+            let connections = await context.globalState.get<{ [key: string]: IConnection }>(Constants.GlobalStateMySQLConectionsKey);
+
+            if (!connections) {
+                connections = {};
+            }
+
+            connections[editConnection.id] = editConnection;
+
+            if (editConnection.password) {
+                await Global.keytar.setPassword(Constants.ExtensionId, editConnection.id, editConnection.password);
+            }
+
+            await context.globalState.update(Constants.GlobalStateMySQLConectionsKey, connections);
+            mysqlTreeDataProvider.refresh();
+        }
+
+        AppInsightsClient.sendEvent("editConncetion.end");
     }
 }

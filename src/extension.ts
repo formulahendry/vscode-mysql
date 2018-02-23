@@ -24,7 +24,7 @@ export function activate(context: vscode.ExtensionContext) {
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("mysql.deleteConnection", (connectionNode: ConnectionNode) => {
-        connectionNode.deleteConnection(context, mysqlTreeDataProvider);
+        Utility.deleteConnection(connectionNode, context, mysqlTreeDataProvider);
     }));
 
     context.subscriptions.push(vscode.commands.registerCommand("mysql.runQuery", () => {
@@ -37,6 +37,14 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.commands.registerCommand("mysql.selectTop1000", (tableNode: TableNode) => {
         tableNode.selectTop1000();
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand("mysql.editConnection", (connectionNode: ConnectionNode) => {
+        Utility.editConnection(connectionNode, context, mysqlTreeDataProvider);
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand("mysql.dropTable", (tableNode: TableNode) => {
+        tableNode.dropTable();
     }));
 }
 
