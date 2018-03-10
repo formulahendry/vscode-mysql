@@ -7,18 +7,17 @@ import { DatabaseNode } from "./model/databaseNode";
 import { INode } from "./model/INode";
 import { TableNode } from "./model/tableNode";
 import { MySQLTreeDataProvider } from "./mysqlTreeDataProvider";
-import { SqlResultDocumentContentProvider } from './sqlResultDocumentContentProvider';
+import { SqlResultDocumentContentProvider } from "./sqlResultDocumentContentProvider";
 
 export function activate(context: vscode.ExtensionContext) {
     AppInsightsClient.sendEvent("loadExtension");
 
     const provider = new SqlResultDocumentContentProvider(context);
-    
-    context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider('sqlresult', provider));
+    context.subscriptions.push(vscode.workspace.registerTextDocumentContentProvider("sqlresult", provider));
 
     const mysqlTreeDataProvider = new MySQLTreeDataProvider(context);
     context.subscriptions.push(vscode.window.registerTreeDataProvider("mysql", mysqlTreeDataProvider));
-    
+
     context.subscriptions.push(vscode.commands.registerCommand("mysql.refresh", (node: INode) => {
         AppInsightsClient.sendEvent("refresh");
         mysqlTreeDataProvider.refresh(node);
@@ -43,8 +42,6 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand("mysql.selectTop1000", (tableNode: TableNode) => {
         tableNode.selectTop1000();
     }));
-
-    
 }
 
 export function deactivate() {

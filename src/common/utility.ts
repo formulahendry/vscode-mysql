@@ -60,35 +60,35 @@ export class Utility {
 
         OutputChannel.appendLine("[Start] Executing MySQL query...");
         connection.query(sql, (err, rows) => {
-            if(Array.isArray(rows)){
+            if (Array.isArray(rows)) {
                 if (rows.some(((row) => Array.isArray(row)))) {
-                    rows.forEach((row,index) => {
+                    rows.forEach((row, index) => {
                         if (Array.isArray(row)) {
                             vscode.commands.executeCommand(
-                                'vscode.previewHtml',
+                                "vscode.previewHtml",
                                 Utility.getPreviewUri(JSON.stringify(row)),
                                 vscode.ViewColumn.Two,
-                                'Results ' + (index + 1 )).then(()=>{},(e)=>{
-                                        OutputChannel.appendLine(e)
-                            });
+                                "Results " + (index + 1)).then(() => { }, (e) => {
+                                    OutputChannel.appendLine(e);
+                                });
                         } else {
                             OutputChannel.appendLine(JSON.stringify(row));
                         }
                     });
                 } else {
                     vscode.commands.executeCommand(
-                        'vscode.previewHtml',
+                        "vscode.previewHtml",
                         Utility.getPreviewUri(JSON.stringify(rows)),
                         vscode.ViewColumn.Two,
-                        'Results').then(()=>{},(e)=>{
-                                OutputChannel.appendLine(e)
-                    });
+                        "Results").then(() => { }, (e) => {
+                            OutputChannel.appendLine(e);
+                        });
                 }
-                
+
             } else {
                 OutputChannel.appendLine(JSON.stringify(rows));
             }
-            
+
             if (err) {
                 OutputChannel.appendLine(err);
                 AppInsightsClient.sendEvent("runQuery.end", { Result: "Fail", ErrorMessage: err });
@@ -98,11 +98,6 @@ export class Utility {
             OutputChannel.appendLine("[Done] Finished MySQL query.");
         });
         connection.end();
-    }
-    private static getPreviewUri(data){
-        let uri = vscode.Uri.parse('sqlresult://mysql/data');
-        
-        return uri.with({query:data});
     }
 
     public static async createSQLTextDocument(sql: string = "") {
@@ -118,6 +113,12 @@ export class Utility {
             };
         }
         return mysql.createConnection(newConnectionOptions);
+    }
+
+    private static getPreviewUri(data) {
+        const uri = vscode.Uri.parse("sqlresult://mysql/data");
+
+        return uri.with({ query: data });
     }
 
     private static async hasActiveConnection(): Promise<boolean> {
