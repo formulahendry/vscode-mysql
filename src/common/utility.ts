@@ -64,25 +64,13 @@ export class Utility {
                 if (rows.some(((row) => Array.isArray(row)))) {
                     rows.forEach((row, index) => {
                         if (Array.isArray(row)) {
-                            vscode.commands.executeCommand(
-                                "vscode.previewHtml",
-                                Utility.getPreviewUri(JSON.stringify(row)),
-                                vscode.ViewColumn.Two,
-                                "Results " + (index + 1)).then(() => { }, (e) => {
-                                    OutputChannel.appendLine(e);
-                                });
+                             Utility.showQueryResult(row, "Results " + (index + 1));
                         } else {
                             OutputChannel.appendLine(JSON.stringify(row));
                         }
                     });
                 } else {
-                    vscode.commands.executeCommand(
-                        "vscode.previewHtml",
-                        Utility.getPreviewUri(JSON.stringify(rows)),
-                        vscode.ViewColumn.Two,
-                        "Results").then(() => { }, (e) => {
-                            OutputChannel.appendLine(e);
-                        });
+                    Utility.showQueryResult(rows, "Results");
                 }
 
             } else {
@@ -119,6 +107,16 @@ export class Utility {
         const uri = vscode.Uri.parse("sqlresult://mysql/data");
 
         return uri.with({ query: data });
+    }
+
+    private static showQueryResult(data, title: string) {
+        vscode.commands.executeCommand(
+            "vscode.previewHtml",
+            Utility.getPreviewUri(JSON.stringify(data)),
+            vscode.ViewColumn.Two,
+            title).then(() => { }, (e) => {
+                OutputChannel.appendLine(e);
+            });
     }
 
     private static async hasActiveConnection(): Promise<boolean> {
