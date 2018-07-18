@@ -2,11 +2,11 @@
     "name": "vscode-mysql",
     "displayName": "MySQL",
     "description": "MySQL management tool",
-    "version": "0.3.0",
+    "version": "0.3.1",
     "publisher": "formulahendry",
     "icon": "logo.png",
     "engines": {
-        "vscode": "^1.18.0"
+        "vscode": "^1.23.0"
     },
     "categories": [
         "Languages",
@@ -35,6 +35,18 @@
     ],
     "main": "./out/extension",
     "contributes": {
+
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "explorer",
+                    "title": "Mysql Database",
+                    "icon": "logom.png"
+                }
+            ]
+        },
+
+
         "views": {
             "explorer": [{
                 "id": "mysql",
