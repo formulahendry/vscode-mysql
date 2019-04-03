@@ -1,3 +1,7 @@
+## 0.4.0 (2018-04-03)
+* [#81](https://github.com/formulahendry/vscode-mysql/issues/81): Upgrade to VS Code's webview API
+* [#97](https://github.com/formulahendry/vscode-mysql/pull/97): Escape database and table names
+
 ## 0.3.0 (2018-03-12)
 * Show query result as HTML table
 

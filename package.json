@@ -2,14 +2,14 @@
     "name": "vscode-mysql",
     "displayName": "MySQL",
     "description": "MySQL management tool",
-    "version": "0.3.0",
+    "version": "0.4.0",
     "publisher": "formulahendry",
     "icon": "logo.png",
     "engines": {
-        "vscode": "^1.18.0"
+        "vscode": "^1.30.0"
     },
     "categories": [
-        "Languages",
+        "Programming Languages",
         "Azure"
     ],
     "keywords": [
@@ -36,12 +36,15 @@
     "main": "./out/extension",
     "contributes": {
         "views": {
-            "explorer": [{
-                "id": "mysql",
-                "name": "MySQL"
-            }]
+            "explorer": [
+                {
+                    "id": "mysql",
+                    "name": "MySQL"
+                }
+            ]
         },
-        "commands": [{
+        "commands": [
+            {
                 "command": "mysql.refresh",
                 "title": "Refresh",
                 "category": "MySQL"
@@ -84,17 +87,22 @@
             }
         ],
         "menus": {
-            "editor/context": [{
-                "command": "mysql.runQuery",
-                "when": "editorLangId == sql",
-                "group": "navigation"
-            }],
-            "view/title": [{
-                "command": "mysql.addConnection",
-                "when": "view == mysql",
-                "group": "navigation@1"
-            }],
-            "view/item/context": [{
+            "editor/context": [
+                {
+                    "command": "mysql.runQuery",
+                    "when": "editorLangId == sql",
+                    "group": "navigation"
+                }
+            ],
+            "view/title": [
+                {
+                    "command": "mysql.addConnection",
+                    "when": "view == mysql",
+                    "group": "navigation@1"
+                }
+            ],
+            "view/item/context": [
+                {
                     "command": "mysql.newQuery",
                     "when": "view == mysql && viewItem == connection",
                     "group": "mysql@1"
