@@ -15,12 +15,12 @@ import { INode } from "./INode";
 export class ConnectionNode implements INode {
     constructor(private readonly id: string, private readonly host: string, private readonly user: string,
                 private readonly password: string, private readonly port: string,
-                private readonly certPath: string) {
+                private readonly certPath: string, private readonly connectionName: string) {
     }
 
     public getTreeItem(): vscode.TreeItem {
         return {
-            label: this.host,
+            label: this.connectionName || this.host,
             collapsibleState: vscode.TreeItemCollapsibleState.Collapsed,
             contextValue: "connection",
             iconPath: path.join(__filename, "..", "..", "..", "resources", "server.png"),
@@ -34,12 +34,13 @@ export class ConnectionNode implements INode {
             password: this.password,
             port: this.port,
             certPath: this.certPath,
+            connectionName: this.connectionName,
         });
 
         return Utility.queryPromise<any[]>(connection, "SHOW DATABASES")
             .then((databases) => {
                 return databases.map<DatabaseNode>((database) => {
-                    return new DatabaseNode(this.host, this.user, this.password, this.port, database.Database, this.certPath);
+                    return new DatabaseNode(this.host, this.user, this.password, this.port, database.Database, this.certPath, this.connectionName);
                 });
             })
             .catch((err) => {
@@ -57,6 +58,7 @@ export class ConnectionNode implements INode {
             password: this.password,
             port: this.port,
             certPath: this.certPath,
+            connectionName: this.connectionName,
         };
     }
 
