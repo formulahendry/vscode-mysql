@@ -62,4 +62,12 @@ export class TableNode implements INode {
 
         Utility.runQuery(sql, connection);
     }
+
+    public copyToClipboard() {
+        Utility.copyToClipboard(this.table);
+    }
+
+    public pasteToActiveEditor() {
+        Utility.pasteToActiveEditor(this.table);
+    }
 }

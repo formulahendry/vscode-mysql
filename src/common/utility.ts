@@ -65,7 +65,7 @@ export class Utility {
                 if (rows.some(((row) => Array.isArray(row)))) {
                     rows.forEach((row, index) => {
                         if (Array.isArray(row)) {
-                             Utility.showQueryResult(row, "Results " + (index + 1));
+                            Utility.showQueryResult(row, "Results " + (index + 1));
                         } else {
                             OutputChannel.appendLine(JSON.stringify(row));
                         }
@@ -102,6 +102,18 @@ export class Utility {
             };
         }
         return mysql.createConnection(newConnectionOptions);
+    }
+
+    public static copyToClipboard(text: string) {
+        vscode.env.clipboard.writeText(text);
+    }
+
+    public static pasteToActiveEditor(text: string) {
+        const activeEditor = vscode.window.activeTextEditor;
+
+        if (activeEditor) {
+            activeEditor.insertSnippet(new vscode.SnippetString(text));
+        }
     }
 
     private static getPreviewUri(data) {
