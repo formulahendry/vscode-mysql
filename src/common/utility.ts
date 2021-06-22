@@ -29,6 +29,30 @@ export class Utility {
         });
     }
 
+    // Remove MySQL instructions: DELIMITER
+    public static removeDelimiterInstructions(sql: string) {
+        if (!sql.search(/delimiter/i)) {
+            return sql;
+        }
+        const rc = new RegExp(/(?<!--\s+.*)(delimiter\s+(\S+))/gi);
+        let currentDelimiter = ";";
+        let nextPosition = 0;
+        let result = "";
+        let a;
+
+        while (Boolean(a = rc.exec(sql))) {
+            result += (currentDelimiter === ";")
+                ? sql.slice(nextPosition, a.index)
+                : sql.slice(nextPosition, a.index).replace(new RegExp(currentDelimiter, "g"), ";");
+            nextPosition = a.index + a[1].length;
+            currentDelimiter = a[2];
+        }
+        result += (currentDelimiter === ";")
+            ? sql.slice(nextPosition)
+            : sql.slice(nextPosition).replace(new RegExp(currentDelimiter, "g"), ";");
+        return result;
+    }
+
     public static async runQuery(sql?: string, connectionOptions?: IConnection) {
         AppInsightsClient.sendEvent("runQuery.start");
         if (!sql && !vscode.window.activeTextEditor) {
@@ -58,6 +82,10 @@ export class Utility {
         connectionOptions = connectionOptions ? connectionOptions : Global.activeConnection;
         connectionOptions.multipleStatements = true;
         const connection = Utility.createConnection(connectionOptions);
+
+        if (this.getConfiguration().get<boolean>("enableDelimiterOperator")) {
+            sql = this.removeDelimiterInstructions(sql);
+        }
 
         OutputChannel.appendLine("[Start] Executing MySQL query...");
         connection.query(sql, (err, rows) => {
