@@ -58,4 +58,12 @@ export class DatabaseNode implements INode {
             certPath: this.certPath,
         };
     }
+
+    public copyToClipboard() {
+        Utility.copyToClipboard(this.database);
+    }
+
+    public pasteToActiveEditor() {
+        Utility.pasteToActiveEditor(this.database);
+    }
 }
