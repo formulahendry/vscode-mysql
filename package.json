@@ -170,7 +170,7 @@
     "devDependencies": {
         "@types/keytar": "^4.0.1",
         "@types/mocha": "^2.2.42",
-        "@types/node": "^7.0.43",
+        "@types/node": "^7.10.14",
         "@types/vscode": "^1.57.0",
         "tslint": "^5.8.0",
         "typescript": "^3.9.10"
