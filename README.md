@@ -35,6 +35,7 @@ MySQL management tool
 ## Settings
 
 * `vscode-mysql.maxTableCount`: The maximum table count shown in the tree view. (Default is **500**)
+* `vscode-mysql.enableDelimiterOperator`: Enable support for DELIMITER operator. (Default is **true**)
 
 ## Telemetry data
 

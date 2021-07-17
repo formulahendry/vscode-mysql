@@ -2,11 +2,11 @@
     "name": "vscode-mysql",
     "displayName": "MySQL",
     "description": "MySQL management tool",
-    "version": "0.4.0",
+    "version": "0.4.1",
     "publisher": "formulahendry",
     "icon": "logo.png",
     "engines": {
-        "vscode": "^1.30.0"
+        "vscode": "^1.57.0"
     },
     "categories": [
         "Programming Languages",
@@ -165,17 +165,15 @@
         "vscode:prepublish": "npm run compile",
         "compile": "tsc -p ./",
         "watch": "tsc -watch -p ./",
-        "postinstall": "node ./node_modules/vscode/bin/install",
-        "test": "npm run compile && node ./node_modules/vscode/bin/test",
         "tslint": "tslint -t verbose src/**/*.ts"
     },
     "devDependencies": {
         "@types/keytar": "^4.0.1",
         "@types/mocha": "^2.2.42",
         "@types/node": "^7.0.43",
+        "@types/vscode": "^1.57.0",
         "tslint": "^5.8.0",
-        "typescript": "^2.6.1",
-        "vscode": "^1.1.6"
+        "typescript": "^3.9.10"
     },
     "dependencies": {
         "applicationinsights": "^1.0.0",

@@ -1,3 +1,6 @@
+## 0.4.1 (2021-07-17)
+* [#170](https://github.com/formulahendry/vscode-mysql/pull/170): Add support for DELIMITER operator
+
 ## 0.4.0 (2018-04-03)
 * [#81](https://github.com/formulahendry/vscode-mysql/issues/81): Upgrade to VS Code's webview API
 * [#97](https://github.com/formulahendry/vscode-mysql/pull/97): Escape database and table names
