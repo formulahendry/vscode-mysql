@@ -12,7 +12,7 @@ import { TableNode } from "./tableNode";
 export class DatabaseNode implements INode {
     constructor(private readonly host: string, private readonly user: string,
                 private readonly password: string, private readonly port: string, private readonly database: string,
-                private readonly certPath: string) {
+                private readonly certPath: string, private readonly connectionName: string) {
     }
 
     public getTreeItem(): vscode.TreeItem {
@@ -32,12 +32,13 @@ export class DatabaseNode implements INode {
             port: this.port,
             database: this.database,
             certPath: this.certPath,
+            connectionName: this.connectionName,
         });
 
         return Utility.queryPromise<any[]>(connection, `SELECT TABLE_NAME FROM information_schema.TABLES  WHERE TABLE_SCHEMA = '${this.database}' LIMIT ${Utility.maxTableCount}`)
             .then((tables) => {
                 return tables.map<TableNode>((table) => {
-                    return new TableNode(this.host, this.user, this.password, this.port, this.database, table.TABLE_NAME, this.certPath);
+                    return new TableNode(this.host, this.user, this.password, this.port, this.database, table.TABLE_NAME, this.certPath, this.connectionName);
                 });
             })
             .catch((err) => {
@@ -56,6 +57,7 @@ export class DatabaseNode implements INode {
             port: this.port,
             database: this.database,
             certPath: this.certPath,
+            connectionName: this.connectionName,
         };
     }
 }
