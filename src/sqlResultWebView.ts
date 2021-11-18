@@ -35,7 +35,7 @@ export class SqlResultWebView {
             return "No data";
         }
 
-        let head = "";
+        let head = `<p>${rows.length} rows</p>`;
         for (const field in rows[0]) {
             if (rows[0].hasOwnProperty(field)) {
                 head += "<th>" + field + "</th>";
