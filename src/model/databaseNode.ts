@@ -34,7 +34,7 @@ export class DatabaseNode implements INode {
             certPath: this.certPath,
         });
 
-        return Utility.queryPromise<any[]>(connection, `SELECT TABLE_NAME FROM information_schema.TABLES  WHERE TABLE_SCHEMA = '${this.database}' LIMIT ${Utility.maxTableCount}`)
+        return Utility.queryPromise<any[]>(connection, `SELECT TABLE_NAME FROM information_schema.TABLES  WHERE TABLE_SCHEMA = '${this.database}' ORDER BY TABLE_NAME LIMIT ${Utility.maxTableCount}`)
             .then((tables) => {
                 return tables.map<TableNode>((table) => {
                     return new TableNode(this.host, this.user, this.password, this.port, this.database, table.TABLE_NAME, this.certPath);

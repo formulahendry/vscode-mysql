@@ -38,6 +38,10 @@ export function activate(context: vscode.ExtensionContext) {
     context.subscriptions.push(vscode.commands.registerCommand("mysql.selectTop1000", (tableNode: TableNode) => {
         tableNode.selectTop1000();
     }));
+
+    context.subscriptions.push(vscode.commands.registerCommand("mysql.customLimitWithSort", (tableNode: TableNode) => {
+        tableNode.customLimitWithSort();
+    }));
 }
 
 export function deactivate() {

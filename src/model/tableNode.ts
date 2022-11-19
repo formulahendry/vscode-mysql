@@ -62,4 +62,33 @@ export class TableNode implements INode {
 
         Utility.runQuery(sql, connection);
     }
+    
+    public async customLimitWithSort() {
+        AppInsightsClient.sendEvent("customLimitWithSort");
+        const limit = await vscode.window.showInputBox({ prompt: "Custom value to select from table", placeHolder: "Limit", ignoreFocusOut: true });
+        const sort = await vscode.window.showInputBox({ prompt: "Order by field for sorting in DESC", placeHolder: "created_at", ignoreFocusOut: true });
+
+        if (!limit && !sort)
+            return;
+
+        if (Number.isNaN(limit)) {
+            vscode.window.showErrorMessage('Invalid value passed for selection - should be a number');
+            return;
+        }
+                
+        const sql = `SELECT * FROM \`${this.database}\`.\`${this.table}\` ORDER BY ${sort} DESC LIMIT ${limit};`;
+        Utility.createSQLTextDocument(sql);
+
+        const connection = {
+            host: this.host,
+            user: this.user,
+            password: this.password,
+            port: this.port,
+            database: this.database,
+            certPath: this.certPath,
+        };
+        Global.activeConnection = connection;
+
+        Utility.runQuery(sql, connection);
+    }
 }
