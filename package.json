@@ -77,6 +77,11 @@
                 "command": "mysql.selectTop1000",
                 "title": "Select Top 1000",
                 "category": "MySQL"
+            },
+            {
+                "command": "mysql.customLimitWithSort",
+                "title": "Custom Limit With Sort",
+                "category": "MySQL"
             }
         ],
         "keybindings": [
@@ -136,6 +141,11 @@
                     "command": "mysql.refresh",
                     "when": "view == mysql && viewItem == table",
                     "group": "mysql@1"
+                },
+                {
+                    "command": "mysql.customLimitWithSort",
+                    "when": "view == mysql && viewItem == table",
+                    "group": "mysql@2"
                 }
             ]
         },
