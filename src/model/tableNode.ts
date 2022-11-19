@@ -76,7 +76,7 @@ export class TableNode implements INode {
             return;
         }
                 
-        const sql = `SELECT * FROM \`${this.database}\`.\`${this.table}\` ORDER BY ${sort} LIMIT ${limit};`;
+        const sql = `SELECT * FROM \`${this.database}\`.\`${this.table}\` ORDER BY ${sort} DESC LIMIT ${limit};`;
         Utility.createSQLTextDocument(sql);
 
         const connection = {
