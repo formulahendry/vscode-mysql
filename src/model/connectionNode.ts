@@ -66,7 +66,7 @@ export class ConnectionNode implements INode {
         delete connections[this.id];
         await context.globalState.update(Constants.GlobalStateMySQLConectionsKey, connections);
 
-        await Global.keytar.deletePassword(Constants.ExtensionId, this.id);
+        await Global.secrets.delete(this.id);
 
         mysqlTreeDataProvider.refresh();
     }

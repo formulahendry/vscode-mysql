@@ -69,7 +69,7 @@ export class MySQLTreeDataProvider implements vscode.TreeDataProvider<INode> {
         };
 
         if (password) {
-            await Global.keytar.setPassword(Constants.ExtensionId, id, password);
+            await Global.secrets.store(id, password);
         }
         await this.context.globalState.update(Constants.GlobalStateMySQLConectionsKey, connections);
         this.refresh();
@@ -85,7 +85,7 @@ export class MySQLTreeDataProvider implements vscode.TreeDataProvider<INode> {
         const ConnectionNodes = [];
         if (connections) {
             for (const id of Object.keys(connections)) {
-                const password = await Global.keytar.getPassword(Constants.ExtensionId, id);
+                const password = await Global.secrets.get(id);
                 ConnectionNodes.push(new ConnectionNode(id, connections[id].host, connections[id].user, password, connections[id].port, connections[id].certPath));
                 if (!Global.activeConnection) {
                     Global.activeConnection = {

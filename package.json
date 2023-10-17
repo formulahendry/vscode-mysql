@@ -168,7 +168,6 @@
         "tslint": "tslint -t verbose src/**/*.ts"
     },
     "devDependencies": {
-        "@types/keytar": "^4.0.1",
         "@types/mocha": "^2.2.42",
         "@types/node": "^7.10.14",
         "@types/vscode": "^1.57.0",

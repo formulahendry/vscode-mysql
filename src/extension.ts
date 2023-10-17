@@ -7,11 +7,15 @@ import { DatabaseNode } from "./model/databaseNode";
 import { INode } from "./model/INode";
 import { TableNode } from "./model/tableNode";
 import { MySQLTreeDataProvider } from "./mysqlTreeDataProvider";
+import { Global } from "./common/global";
 
 export function activate(context: vscode.ExtensionContext) {
     AppInsightsClient.sendEvent("loadExtension");
 
     const mysqlTreeDataProvider = new MySQLTreeDataProvider(context);
+    
+    Global.secrets = context.secrets;
+
     context.subscriptions.push(vscode.window.registerTreeDataProvider("mysql", mysqlTreeDataProvider));
 
     context.subscriptions.push(vscode.commands.registerCommand("mysql.refresh", (node: INode) => {
