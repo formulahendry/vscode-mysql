@@ -1,3 +1,6 @@
+## 0.5.0 (2023-10-17)
+* [#207](https://github.com/formulahendry/vscode-mysql/pull/207): Remove keytar dependancy
+
 ## 0.4.1 (2021-07-17)
 * [#170](https://github.com/formulahendry/vscode-mysql/pull/170): Add support for DELIMITER operator
 
