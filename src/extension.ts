@@ -2,6 +2,7 @@
 import * as vscode from "vscode";
 import { AppInsightsClient } from "./common/appInsightsClient";
 import { Utility } from "./common/utility";
+import { ColumnNode } from "./model/columnNode";
 import { ConnectionNode } from "./model/connectionNode";
 import { DatabaseNode } from "./model/databaseNode";
 import { INode } from "./model/INode";
@@ -41,6 +42,14 @@ export function activate(context: vscode.ExtensionContext) {
 
     context.subscriptions.push(vscode.commands.registerCommand("mysql.selectTop1000", (tableNode: TableNode) => {
         tableNode.selectTop1000();
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand("mysql.copyToClipboard", (node: (TableNode | DatabaseNode | ColumnNode)) => {
+        node.copyToClipboard();
+    }));
+
+    context.subscriptions.push(vscode.commands.registerCommand("mysql.pasteToActiveEditor", (node: (TableNode | DatabaseNode | ColumnNode)) => {
+        node.pasteToActiveEditor();
     }));
 }
 

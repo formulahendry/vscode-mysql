@@ -25,4 +25,12 @@ export class ColumnNode implements INode {
     public async getChildren(): Promise<INode[]> {
         return [];
     }
+
+    public copyToClipboard() {
+        Utility.copyToClipboard(this.column.COLUMN_NAME);
+    }
+
+    public pasteToActiveEditor() {
+        Utility.pasteToActiveEditor(this.column.COLUMN_NAME);
+    }
 }
