@@ -77,6 +77,11 @@
                 "command": "mysql.selectTop1000",
                 "title": "Select Top 1000",
                 "category": "MySQL"
+            },
+            {
+                "command": "mysql.keywordFilter",
+                "title": "Filter",
+                "category": "MySQL"
             }
         ],
         "keybindings": [
@@ -118,6 +123,11 @@
                     "group": "mysql@2"
                 },
                 {
+                    "command": "mysql.keywordFilter",
+                    "when": "view == mysql && viewItem == connection",
+                    "group": "mysql@2"
+                },
+                {
                     "command": "mysql.newQuery",
                     "when": "view == mysql && viewItem == database",
                     "group": "mysql@0"
@@ -126,6 +136,11 @@
                     "command": "mysql.refresh",
                     "when": "view == mysql && viewItem == database",
                     "group": "mysql@1"
+                },
+                {
+                    "command": "mysql.keywordFilter",
+                    "when": "view == mysql && viewItem == database",
+                    "group": "mysql@2"
                 },
                 {
                     "command": "mysql.selectTop1000",

@@ -6,6 +6,7 @@ import { Constants } from "./common/constants";
 import { Global } from "./common/global";
 import { IConnection } from "./model/connection";
 import { ConnectionNode } from "./model/connectionNode";
+import { DatabaseNode } from "./model/databaseNode";
 import { INode } from "./model/INode";
 
 export class MySQLTreeDataProvider implements vscode.TreeDataProvider<INode> {
@@ -75,6 +76,19 @@ export class MySQLTreeDataProvider implements vscode.TreeDataProvider<INode> {
         this.refresh();
         AppInsightsClient.sendEvent("addConnection.end");
     }
+
+    public async keywordFilter(node: DatabaseNode | ConnectionNode) {
+        vscode.window.showInputBox({
+           prompt: "" , placeHolder: "keyword", value: node.keyword,
+           validateInput: (keyword: string) => {
+                if (node.keyword !== keyword) {
+                    node.keyword = keyword;
+                    this.refresh(node);
+                }
+                return "";
+           },
+       });
+   }
 
     public refresh(element?: INode): void {
         this._onDidChangeTreeData.fire(element);
